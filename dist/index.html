@@ -1,64 +1,38 @@
-<!DOCTYPE HTML>
-<html>
-    <head>
-        <title>Eltik's M3U8 Proxy</title>
-        <meta charset="utf-8">
-        <meta name="title" content="Eltik's M3U8 Proxy" />
-        <meta name="description" content="Playground for testing Eltik's m3u8 proxy." />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Animegers! >> Anime Player</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://animegers.com/player/server2/jwplayer.js"></script>
+    <style>
+        body {background-color: #000;}
+    </style>
+</head>
+<body>
+<div id="player"></div>
 
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://m3u8.eltik.net/test" />
-        <meta property="og:title" content="Eltik's M3U8 Proxy" />
-        <meta property="og:description" content="Playground for testing Eltik's m3u8 proxy." />
-        <meta property="og:image" content="" />
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    const apiLink = 'https://animegers-main-gogoanime-api.onrender.com';
+    const proxyBaseUrl = 'https://animegers-proxy-anime.onrender.com/m3u8-proxy';
 
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://m3u8.eltik.net/test" />
-        <meta property="twitter:title" content="Eltik's M3U8 Proxy"/>
-        <meta property="twitter:description" content="Playground for testing Eltik's m3u8 proxy." />
-        <meta property="twitter:image" content="" />
-        <style>
-            video {
-                width: 100%;
-                height: 100%;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Very bad playground design but its fine</h1>
-        <p>basically put in an m3u8 for the url, and put stringified headers into the headers section. yeah thats it.</p>
-        <label for="url">URL</label>
-        <input type="text" id="url" value="https://ojkx.vizcloud.co/simple/EqPFJvsQWADtjDlGha7rC8UurFwHuLiwTk17rqk+wYMnU94US2El_Po4w12gXe6GptOSQtc/br/list.m3u8#.mp4" />
-        <label for="headers">Headers</label>
-        <textarea id="headers">{"referer": "https://9anime.pl"}</textarea>
-        <button onclick="test()">Test</button>
-        <video id="hls" controls></video>
-        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-        <script>
-            function test() {
-                const url = document.getElementById('url').value;
-                let headers = document.getElementById('headers').value;
+    fetch(`${apiLink}/vidcdn/watch/${id}`)
+        .then(response => response.json())
+        .then(jsonData => {
+            const videoFile = jsonData.sources[0].file;
+            const headers = encodeURIComponent('{"referer": "https://s3embtaku.pro"}');
+            const proxiedVideoUrl = `${proxyBaseUrl}?url=${videoFile}&headers=${headers}`;
 
-                try {
-                    headers = JSON.parse(headers);
-                } catch (e) {
-                    headers = {};
-                    alert("Invalid headers. Set headers to {}.");
-                }
+            const player = new Playerjs({
+                id: "player",
+                file: proxiedVideoUrl,
+                hls: 1
+            });
+        })
+        .catch(error => console.error('Error fetching video data:', error));
+</script>
 
-                console.log("Using URL " + url);
-                console.log("Using headers " + JSON.stringify(headers));
-
-                if (Hls.isSupported()) {
-                    var video = document.getElementById('hls');
-                    var hls = new Hls();
-                    hls.loadSource(`/m3u8-proxy?url=${encodeURIComponent(url)}&headers=${encodeURIComponent(JSON.stringify(headers))}`);
-                    hls.attachMedia(video);
-                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                        console.log(`/m3u8-proxy?url=${encodeURIComponent(url)}&headers=${encodeURIComponent(JSON.stringify(headers))}`)
-                    });
-                }
-            }
-        </script>
-    </body>
+</body>
 </html>
