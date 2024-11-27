@@ -4,7 +4,7 @@
     <title>Animegers! >> Anime Player 2</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://animegers.com/player/server2/playerjs.js"></script>
+    <script src="https://animegers.com/test/playerjs.js"></script>
     <style>
         body {background-color: #000;}
     </style>
@@ -15,7 +15,7 @@
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
-    const apiLink = 'https://gogoapi.animegers.com';
+    const apiLink = 'https://gogoanime-ei6k.onrender.com';
     const proxyBaseUrl = 'https://second.aniplayer.site/m3u8-proxy';
 
     fetch(`${apiLink}/vidcdn/watch/${id}`)
