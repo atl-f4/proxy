@@ -16,7 +16,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     const apiLink = 'https://gogoapi.animegers.com';
-    const proxyBaseUrl = 'https://proxy-player-38e566eb54e8.herokuapp.com/m3u8-proxy';
+    const proxyBaseUrl = 'https://player.animegers.com/m3u8-proxy';
 
     fetch(`${apiLink}/vidcdn/watch/${id}`)
         .then(response => response.json())
